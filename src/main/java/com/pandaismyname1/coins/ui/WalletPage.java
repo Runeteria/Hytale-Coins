@@ -57,25 +57,26 @@ public class WalletPage extends InteractiveCustomUIPage<WalletPage.WalletEventDa
         // Display coins in descending order of value
         Coin[] coins = Coin.values();
         int index = 0;
+        long balanceCalc = balance;
         for (int i = coins.length - 1; i >= 0; i--) {
             Coin coin = coins[i];
-            long maxWithdrawable = balance / coin.getValue();
+            long maxWithdrawable = balanceCalc / coin.getValue();
+            balanceCalc = balanceCalc % coin.getValue();
             
-            if (maxWithdrawable > 0) {
-                String selector = "#CoinList[" + index + "]";
-                commandBuilder.append("#CoinList", "Pages/WalletCoinRow.ui");
-                
-                commandBuilder.set(selector + " #Name.Text", coin.name() + " Coin");
-                commandBuilder.set(selector + " #Description.Text", "Value: " + coin.getValue() + " Copper | Max: " + maxWithdrawable);
-                
-                eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, selector + " #Button", 
-                        new EventData().append("Index", String.valueOf(index)), false);
-                
-                commandBuilder.set(selector + " #Icon.ItemId", coin.getItemId());
-                
-                displayedCoins.add(coin);
-                index++;
-            }
+            String selector = "#CoinList[" + index + "]";
+            commandBuilder.append("#CoinList", "Pages/WalletCoinRow.ui");
+
+            commandBuilder.set(selector + " #Name.Text", coin.name() + " Coin");
+            commandBuilder.set(selector + " #CoinAmount.Text", maxWithdrawable + "");
+            commandBuilder.set(selector + " #Description.Text", "Value: " + coin.getValue() + " Copper");
+
+            eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, selector + " #Button",
+                    new EventData().append("Index", String.valueOf(index)), false);
+
+            commandBuilder.set(selector + " #Icon.ItemId", coin.getItemId());
+
+            displayedCoins.add(coin);
+            index++;
         }
 
         if (displayedCoins.isEmpty()) {

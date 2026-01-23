@@ -4,7 +4,7 @@ $C.@PageOverlay {}
 $W = "WalletActions.ui";
 
 $C.@Container {
-  Anchor: (Width: 400, Height: 550);
+  Anchor: (Width: 400, Height: 350);
 
   #Title {
     Group {

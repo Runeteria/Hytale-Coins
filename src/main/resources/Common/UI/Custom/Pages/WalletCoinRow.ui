@@ -1,13 +1,13 @@
 $C = "../Common.ui";
 
 Group {
-  Padding: (Bottom: 8);
+  Padding: (Bottom: 4);
   Anchor: (Height: 72);
 
   Button #Button {
     LayoutMode: Left;
     Anchor: (Full: 0);
-    Padding: (Full: 4);
+    Padding: (Left: 4, Bottom: 4, Top: 4);
     Style: $C.@DefaultButtonStyle;
 
     ItemIcon #Icon {
@@ -20,7 +20,11 @@ Group {
       Padding: (Left: 12);
 
       Label #Name {
-        Style: (FontSize: 18, TextColor: #FFFFFF, RenderBold: true);
+        Style: (FontSize: 14, TextColor: #FFFFFF, RenderBold: true);
+      }
+
+      Label #CoinAmount {
+        Style: (FontSize: 18, TextColor: #F1C40F, RenderBold: true);
       }
 
       Label #Description {

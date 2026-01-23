@@ -14,12 +14,12 @@ public class WalletTest {
         // Initial balance check
         assertEquals(500, wallet.getBalance());
         
-        // Test withdrawing 50 iron coins (50 * 10 = 500)
+        // Test withdrawing 50 copper coins (50 * 10 = 500)
         // Note: Wallet.java doesn't handle the coin type in its remove method, 
         // it only removes copper. The logic is in WalletPage.
         
-        assertTrue(wallet.remove(50 * Coin.IRON.getValue()));
-        assertEquals(0, wallet.getBalance());
+        assertTrue(wallet.remove(50 * Coin.COPPER.getValue()));
+        assertEquals(450, wallet.getBalance());
     }
 
     @Test
