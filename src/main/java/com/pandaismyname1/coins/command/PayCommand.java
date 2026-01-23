@@ -71,7 +71,7 @@ public class PayCommand extends AbstractCommand {
             sender.sendMessage(Message.raw("§6[Wallet] §fYou paid §e" + amount + " Copper §fto §b" + recipientRef.getUsername() + "§f."));
 
             // Try to notify recipient if they are online
-            Player recipientPlayer = recipientRef.getHolder().getComponent(com.hypixel.hytale.server.core.modules.entity.EntityModule.get().getPlayerComponentType());
+            Player recipientPlayer = recipientRef.getComponent(Player.getComponentType());
             if (recipientPlayer != null) {
                 recipientPlayer.sendMessage(Message.raw("§6[Wallet] §fYou received §e" + amount + " Copper §ffrom §b" + sender.getDisplayName() + "§f."));
             }

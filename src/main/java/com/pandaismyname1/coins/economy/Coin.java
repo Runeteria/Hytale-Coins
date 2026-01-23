@@ -4,11 +4,8 @@ import com.pandaismyname1.coins.config.ConfigManager;
 
 public enum Coin {
     COPPER("Coin_Copper", 1),
-    IRON("Coin_Iron", 10),
     SILVER("Coin_Silver", 100),
-    GOLD("Coin_Gold", 1000),
-    EMERALD("Coin_Emerald", 10000),
-    DIAMOND("Coin_Diamond", 100000);
+    GOLD("Coin_Gold", 1000);
 
     private final String itemId;
     private final long value;
