@@ -59,10 +59,21 @@ javadoc {
 dependencies {
     implementation(files("$hytaleHome/install/$patchline/package/game/latest/Server/HytaleServer.jar"))
 
+    // Lombok
+    compileOnly("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    testCompileOnly("org.projectlombok:lombok:1.18.42")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
+
+    // DB
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.3.2")
+    implementation("com.zaxxer:HikariCP:5.1.0")
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     compileOnly(files("libs/VaultUnlocked-Hytale-2.18.2.jar"))
+    testImplementation(files("libs/VaultUnlocked-Hytale-2.18.2.jar"))
 }
 
 test {

@@ -50,6 +50,11 @@ public class EconomyCommand extends AbstractCommand {
             if (targetRef == null || amount == null) return CompletableFuture.completedFuture(null);
 
             Wallet wallet = WalletManager.getWallet(targetRef.getUuid());
+            if (wallet == null) {
+                commandContext.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+                return CompletableFuture.completedFuture(null);
+            }
+
             long current = wallet.getBalance();
             wallet.remove(current);
             wallet.add(amount);
@@ -77,6 +82,11 @@ public class EconomyCommand extends AbstractCommand {
             if (targetRef == null || amount == null) return CompletableFuture.completedFuture(null);
 
             Wallet wallet = WalletManager.getWallet(targetRef.getUuid());
+            if (wallet == null) {
+                commandContext.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+                return CompletableFuture.completedFuture(null);
+            }
+
             wallet.add(amount);
 
             commandContext.sendMessage(Message.raw("§6[Economy] §fAdded §e" + amount + " Copper §fto §b" + targetRef.getUsername() + "§f's balance."));

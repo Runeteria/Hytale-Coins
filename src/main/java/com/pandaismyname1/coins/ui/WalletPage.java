@@ -27,8 +27,10 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class WalletPage extends InteractiveCustomUIPage<WalletPage.WalletEventData> {
+    private static final Logger LOGGER = Logger.getLogger(WalletPage.class.getName());
     private List<Coin> displayedCoins = new ArrayList<>();
 
     public WalletPage(PlayerRef playerRef) {
@@ -38,6 +40,12 @@ public class WalletPage extends InteractiveCustomUIPage<WalletPage.WalletEventDa
     @Override
     public void build(@Nonnull Ref ref, @Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder, @Nonnull Store store) {
         Wallet wallet = WalletManager.getWallet(playerRef.getUuid());
+        if (wallet == null) {
+            commandBuilder.append("Pages/WalletPage.ui");
+            commandBuilder.set("#Balance.Text", "§cEconomy system unavailable");
+            commandBuilder.set("#EmptyMessage.Visible", true);
+            return;
+        }
         long balance = wallet.getBalance();
 
         commandBuilder.append("Pages/WalletPage.ui");
@@ -83,6 +91,10 @@ public class WalletPage extends InteractiveCustomUIPage<WalletPage.WalletEventDa
         if (slotIndex >= 0 && slotIndex < displayedCoins.size()) {
             Coin coin = displayedCoins.get(slotIndex);
             Wallet wallet = WalletManager.getWallet(playerRef.getUuid());
+            if (wallet == null) {
+                LOGGER.warning("[ECONOMY_UNAVAILABLE] WITHDRAW FAILED: player=" + playerRef.getUuid() + ", coin=" + coin.name() + " - database not connected");
+                return;
+            }
             long balance = wallet.getBalance();
 
             // Withdraw 1 coin by default, 100 if shift is held (or max possible)
@@ -92,6 +104,7 @@ public class WalletPage extends InteractiveCustomUIPage<WalletPage.WalletEventDa
                 long totalValue = (long) toWithdraw * coin.getValue();
 
                 if (wallet.remove(totalValue)) {
+                    LOGGER.info("[TRANSACTION] WITHDRAW: player=" + playerRef.getUuid() + ", coin=" + coin.name() + ", quantity=" + toWithdraw + ", value=" + totalValue + ", newBalance=" + wallet.getBalance());
                     Player playerComponent = (Player) store.getComponent(ref, Player.getComponentType());
                     if (playerComponent != null) {
                         ItemStack toAdd = new ItemStack(coin.getItemId(), toWithdraw);

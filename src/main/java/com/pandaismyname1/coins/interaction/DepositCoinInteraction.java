@@ -21,8 +21,10 @@ import com.hypixel.hytale.server.core.Message;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class DepositCoinInteraction extends SimpleInstantInteraction {
+    private static final Logger LOGGER = Logger.getLogger(DepositCoinInteraction.class.getName());
     public static final BuilderCodec CODEC = BuilderCodec.builder(DepositCoinInteraction.class, DepositCoinInteraction::new, SimpleInstantInteraction.CODEC).build();
 
     public DepositCoinInteraction() {
@@ -45,7 +47,18 @@ public class DepositCoinInteraction extends SimpleInstantInteraction {
             long value = coin.getValue() * quantity;
 
             Wallet wallet = WalletManager.getWallet(uuid);
+            if (wallet == null) {
+                // Economy unavailable - notify player but don't consume items
+                LOGGER.warning("[ECONOMY_UNAVAILABLE] DEPOSIT FAILED: player=" + uuid + ", coin=" + coin.name() + ", quantity=" + quantity + ", value=" + value + " - database not connected");
+                Player player = (Player) context.getCommandBuffer().getComponent(ref, Player.getComponentType());
+                if (player != null) {
+                    player.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+                }
+                return;
+            }
+
             wallet.add(value);
+            LOGGER.info("[TRANSACTION] DEPOSIT: player=" + uuid + ", coin=" + coin.name() + ", quantity=" + quantity + ", value=" + value + ", newBalance=" + wallet.getBalance());
 
             // Inform the user
             Player player = (Player) context.getCommandBuffer().getComponent(ref, Player.getComponentType());

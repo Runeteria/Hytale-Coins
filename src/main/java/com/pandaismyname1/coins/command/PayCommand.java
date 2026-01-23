@@ -53,12 +53,23 @@ public class PayCommand extends AbstractCommand {
         }
 
         Wallet senderWallet = WalletManager.getWallet(sender.getUuid());
+        if (senderWallet == null) {
+            commandContext.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+            return CompletableFuture.completedFuture(null);
+        }
+
         if (senderWallet.remove(amount)) {
             Wallet recipientWallet = WalletManager.getWallet(recipientRef.getUuid());
+            if (recipientWallet == null) {
+                // Refund sender if recipient wallet unavailable
+                senderWallet.add(amount);
+                commandContext.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+                return CompletableFuture.completedFuture(null);
+            }
             recipientWallet.add(amount);
 
             sender.sendMessage(Message.raw("§6[Wallet] §fYou paid §e" + amount + " Copper §fto §b" + recipientRef.getUsername() + "§f."));
-            
+
             // Try to notify recipient if they are online
             Player recipientPlayer = recipientRef.getHolder().getComponent(com.hypixel.hytale.server.core.modules.entity.EntityModule.get().getPlayerComponentType());
             if (recipientPlayer != null) {

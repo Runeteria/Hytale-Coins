@@ -8,11 +8,14 @@ import net.milkbowl.vault2.economy.EconomyResponse;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class VaultUnlockedEconomy implements Economy {
+    private static final Logger LOGGER = Logger.getLogger(VaultUnlockedEconomy.class.getName());
+
     @Override
     public boolean isEnabled() {
-        return true;
+        return WalletManager.isAvailable();
     }
     
     @Override
@@ -92,8 +95,11 @@ public class VaultUnlockedEconomy implements Economy {
 
     @Override
     public boolean createAccount( UUID accountID,  String name) {
-        // WalletManager.getWallet creates the wallet if it doesn't exist
-        WalletManager.getWallet(accountID);
+        Wallet wallet = WalletManager.getWallet(accountID);
+        if (wallet == null) {
+            LOGGER.warning("[ECONOMY_UNAVAILABLE] createAccount FAILED: account=" + accountID + ", name=" + name + " - database not connected");
+            return false;
+        }
         return true;
     }
 
@@ -124,7 +130,7 @@ public class VaultUnlockedEconomy implements Economy {
 
     @Override
     public boolean hasAccount( UUID accountID) {
-        return true; // We always have an account as it's lazily created
+        return WalletManager.isAvailable();
     }
 
     @Override
@@ -157,10 +163,14 @@ public class VaultUnlockedEconomy implements Economy {
         return hasCurrency(currency);
     }
 
-    
+
     @Override
     public BigDecimal getBalance( String pluginName,  UUID accountID) {
         Wallet wallet = WalletManager.getWallet(accountID);
+        if (wallet == null) {
+            LOGGER.warning("[ECONOMY_UNAVAILABLE] getBalance FAILED: plugin=" + pluginName + ", account=" + accountID + " - database not connected");
+            return BigDecimal.ZERO;
+        }
         return BigDecimal.valueOf(wallet.getBalance());
     }
 
@@ -179,6 +189,10 @@ public class VaultUnlockedEconomy implements Economy {
     @Override
     public boolean has( String pluginName,  UUID accountID,  BigDecimal amount) {
         Wallet wallet = WalletManager.getWallet(accountID);
+        if (wallet == null) {
+            LOGGER.warning("[ECONOMY_UNAVAILABLE] has FAILED: plugin=" + pluginName + ", account=" + accountID + ", amount=" + amount + " - database not connected");
+            return false;
+        }
         return wallet.getBalance() >= amount.longValue();
     }
 
@@ -195,8 +209,13 @@ public class VaultUnlockedEconomy implements Economy {
     @Override
     public  EconomyResponse withdraw( String pluginName,  UUID accountID,  BigDecimal amount) {
         Wallet wallet = WalletManager.getWallet(accountID);
+        if (wallet == null) {
+            LOGGER.warning("[ECONOMY_UNAVAILABLE] WITHDRAW FAILED: plugin=" + pluginName + ", account=" + accountID + ", amount=" + amount + " - database not connected");
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy system unavailable");
+        }
         long amountLong = amount.longValue();
         if (wallet.remove(amountLong)) {
+            LOGGER.info("[TRANSACTION] VAULT_WITHDRAW: plugin=" + pluginName + ", account=" + accountID + ", amount=" + amountLong + ", newBalance=" + wallet.getBalance());
             return new EconomyResponse(amount, BigDecimal.valueOf(wallet.getBalance()), EconomyResponse.ResponseType.SUCCESS, "");
         } else {
             return new EconomyResponse(amount, BigDecimal.valueOf(wallet.getBalance()), EconomyResponse.ResponseType.FAILURE, "Insufficient funds");
@@ -215,12 +234,17 @@ public class VaultUnlockedEconomy implements Economy {
         return withdraw(pluginName, accountID, amount);
     }
 
-    
+
     @Override
     public EconomyResponse deposit( String pluginName,  UUID accountID,  BigDecimal amount) {
         Wallet wallet = WalletManager.getWallet(accountID);
+        if (wallet == null) {
+            LOGGER.warning("[ECONOMY_UNAVAILABLE] DEPOSIT FAILED: plugin=" + pluginName + ", account=" + accountID + ", amount=" + amount + " - database not connected");
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy system unavailable");
+        }
         long amountLong = amount.longValue();
         wallet.add(amountLong);
+        LOGGER.info("[TRANSACTION] VAULT_DEPOSIT: plugin=" + pluginName + ", account=" + accountID + ", amount=" + amountLong + ", newBalance=" + wallet.getBalance());
         return new EconomyResponse(amount, BigDecimal.valueOf(wallet.getBalance()), EconomyResponse.ResponseType.SUCCESS, "");
     }
 
