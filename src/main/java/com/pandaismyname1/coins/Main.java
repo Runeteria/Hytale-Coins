@@ -42,7 +42,10 @@ public class Main extends JavaPlugin {
         int dbPort = System.getenv("DB_PORT") != null ? Integer.parseInt(System.getenv("DB_PORT")) : 3306;
         String dbName = System.getenv("DB_NAME") != null ? System.getenv("DB_NAME") : "runeteria";
         String dbUser = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : "runeteria";
-        String dbPassword = System.getenv("DB_PASSWORD") != null ? System.getenv("DB_PASSWORD") : "wbn3wzk6HRQ3efv-yfr";
+
+        String dbPassword = "";
+        if (System.getenv("DB_PASSWORD") != null) dbPassword = System.getenv("DB_PASSWORD");
+
         String serverId = System.getenv("SERVER_ID") != null ? System.getenv("SERVER_ID") : "server-1";
 
         // Load config
