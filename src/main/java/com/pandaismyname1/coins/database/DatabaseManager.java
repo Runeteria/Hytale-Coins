@@ -18,7 +18,6 @@ public class DatabaseManager {
 
     @Getter private HikariDataSource dataSource;
     private ExecutorService executorService;
-    private String serverId;
 
     private volatile boolean connected = false;
 
@@ -62,11 +61,15 @@ public class DatabaseManager {
      * @param database Database name
      * @param username Database username
      * @param password Database password
-     * @param serverId Unique identifier for this server instance
      */
-    public void connect(String host, int port, String database, String username, String password, String serverId) {
+    public void connect(String host, int port, String database, String username, String password) {
         try {
-            this.serverId = serverId;
+
+            // If the host is empty or null (not specified in the config) - fuck off
+            if (host == null || host.isEmpty()) {
+                Main.getInstance().getLogger().atWarning().log("No database host provided - disabling SQL support");
+                return;
+            }
 
             // Explicitly load the MariaDB driver (required in plugin classloader environments)
             Class.forName("org.mariadb.jdbc.Driver");

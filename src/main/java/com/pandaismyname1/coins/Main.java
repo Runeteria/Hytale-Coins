@@ -18,7 +18,6 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.server.OpenCustomUIInteraction;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
-import com.hypixel.hytale.assetstore.codec.AssetCodecMapCodec;
 import lombok.Getter;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -38,15 +37,6 @@ public class Main extends JavaPlugin {
 
         // Initialize database
         this.databaseManager = new DatabaseManager(this);
-        String dbHost = System.getenv("DB_HOST") != null ? System.getenv("DB_HOST") : "172.17.0.1";
-        int dbPort = System.getenv("DB_PORT") != null ? Integer.parseInt(System.getenv("DB_PORT")) : 3306;
-        String dbName = System.getenv("DB_NAME") != null ? System.getenv("DB_NAME") : "runeteria";
-        String dbUser = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : "runeteria";
-
-        String dbPassword = "";
-        if (System.getenv("DB_PASSWORD") != null) dbPassword = System.getenv("DB_PASSWORD");
-
-        String serverId = System.getenv("SERVER_ID") != null ? System.getenv("SERVER_ID") : "server-1";
 
         // Load config
         ConfigManager.load();
@@ -63,7 +53,7 @@ public class Main extends JavaPlugin {
         OpenCustomUIInteraction.registerSimple(this, WalletPage.class, "Coins_Wallet", WalletPage::new);
 
         // Register custom interaction
-        ((AssetCodecMapCodec) Interaction.CODEC).register("DepositCoin", DepositCoinInteraction.class, DepositCoinInteraction.CODEC);
+        Interaction.CODEC.register("DepositCoin", DepositCoinInteraction.class, DepositCoinInteraction.CODEC);
 
         // Register mob death listener
         this.getEntityStoreRegistry().registerSystem(new MobDeathListener());
@@ -78,8 +68,15 @@ public class Main extends JavaPlugin {
             this.getLogger().atInfo().log("Vault2 not found. Skipping Vault integration.");
         }
 
+        // Load DB values from the config
+        String dbHost = ConfigManager.getConfig().getHost();
+        int dbPort = ConfigManager.getConfig().getPort();
+        String dbName = ConfigManager.getConfig().getDatabase();
+        String dbUser = ConfigManager.getConfig().getUsername();
+        String dbPassword = ConfigManager.getConfig().getPassword();
+
         // Connect to database
-        this.databaseManager.connect(dbHost, dbPort, dbName, dbUser, dbPassword, serverId);
+        this.databaseManager.connect(dbHost, dbPort, dbName, dbUser, dbPassword);
 
         // Initialize economy data handler (auto-registers with DatabaseManager)
         this.economyDataHandler = new EconomyDataHandler(this.databaseManager);
