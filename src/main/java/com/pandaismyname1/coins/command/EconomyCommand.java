@@ -51,7 +51,7 @@ public class EconomyCommand extends AbstractCommand {
 
             Wallet wallet = WalletManager.getWallet(targetRef.getUuid());
             if (wallet == null) {
-                commandContext.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+                commandContext.sendMessage(Message.raw("Economy system is currently unavailable."));
                 return CompletableFuture.completedFuture(null);
             }
 
@@ -59,7 +59,7 @@ public class EconomyCommand extends AbstractCommand {
             wallet.remove(current);
             wallet.add(amount);
 
-            commandContext.sendMessage(Message.raw("§6[Economy] §fSet §b" + targetRef.getUsername() + "§f's balance to §e" + amount + " Copper§f."));
+            commandContext.sendMessage(Message.raw("[Economy] Set " + targetRef.getUsername() + "'s balance to " + amount + " Copper."));
             return CompletableFuture.completedFuture(null);
         }
     }
@@ -83,13 +83,13 @@ public class EconomyCommand extends AbstractCommand {
 
             Wallet wallet = WalletManager.getWallet(targetRef.getUuid());
             if (wallet == null) {
-                commandContext.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+                commandContext.sendMessage(Message.raw("Economy system is currently unavailable."));
                 return CompletableFuture.completedFuture(null);
             }
 
             wallet.add(amount);
 
-            commandContext.sendMessage(Message.raw("§6[Economy] §fAdded §e" + amount + " Copper §fto §b" + targetRef.getUsername() + "§f's balance."));
+            commandContext.sendMessage(Message.raw("[Economy] Added " + amount + " Copper to " + targetRef.getUsername() + "'s balance."));
             return CompletableFuture.completedFuture(null);
         }
     }

@@ -12,7 +12,10 @@ import com.pandaismyname1.coins.economy.WalletManager;
 import com.pandaismyname1.coins.interaction.DepositCoinInteraction;
 import com.pandaismyname1.coins.listener.CropHarvestListener;
 import com.pandaismyname1.coins.listener.MobDeathListener;
+import com.pandaismyname1.coins.listener.PlayerListener;
 import com.pandaismyname1.coins.plugins.VaultUnlockedPlugin;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.pandaismyname1.coins.ui.WalletPage;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
@@ -60,6 +63,10 @@ public class Main extends JavaPlugin {
 
         // Register crop harvest listener
         this.getEntityStoreRegistry().registerSystem(new CropHarvestListener());
+
+        // Register player join/quit listeners for cross-server wallet sync
+        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, PlayerListener::onPlayerReady);
+        this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, PlayerListener::onPlayerDisconnect);
 
         try {
             Class.forName("net.milkbowl.vault2.economy.Economy");

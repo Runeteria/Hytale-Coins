@@ -76,6 +76,17 @@ public class WalletManager {
      *
      * @param playerUuid The player's UUID
      */
+    /**
+     * Loads a wallet directly into the cache without checking the database.
+     * Used for cross-server sync when the balance is already known.
+     *
+     * @param playerUuid The player's UUID
+     * @param wallet     The wallet to cache
+     */
+    public static void loadWalletDirect(UUID playerUuid, Wallet wallet) {
+        wallets.put(playerUuid, wallet);
+    }
+
     public static void unloadWallet(UUID playerUuid) {
         saveWallet(playerUuid);
         wallets.remove(playerUuid);

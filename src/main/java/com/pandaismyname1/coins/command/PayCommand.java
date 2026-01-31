@@ -43,18 +43,18 @@ public class PayCommand extends AbstractCommand {
         }
 
         if (amount <= 0) {
-            commandContext.sendMessage(Message.raw("§cAmount must be greater than zero."));
+            commandContext.sendMessage(Message.raw("Amount must be greater than zero."));
             return CompletableFuture.completedFuture(null);
         }
 
         if (sender.getUuid().equals(recipientRef.getUuid())) {
-            commandContext.sendMessage(Message.raw("§cYou cannot pay yourself."));
+            commandContext.sendMessage(Message.raw("You cannot pay yourself."));
             return CompletableFuture.completedFuture(null);
         }
 
         Wallet senderWallet = WalletManager.getWallet(sender.getUuid());
         if (senderWallet == null) {
-            commandContext.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+            commandContext.sendMessage(Message.raw("Economy system is currently unavailable."));
             return CompletableFuture.completedFuture(null);
         }
 
@@ -63,20 +63,20 @@ public class PayCommand extends AbstractCommand {
             if (recipientWallet == null) {
                 // Refund sender if recipient wallet unavailable
                 senderWallet.add(amount);
-                commandContext.sendMessage(Message.raw("§cEconomy system is currently unavailable."));
+                commandContext.sendMessage(Message.raw("Economy system is currently unavailable."));
                 return CompletableFuture.completedFuture(null);
             }
             recipientWallet.add(amount);
 
-            sender.sendMessage(Message.raw("§6[Wallet] §fYou paid §e" + amount + " Copper §fto §b" + recipientRef.getUsername() + "§f."));
+            sender.sendMessage(Message.raw("[Wallet] You paid " + amount + " Copper to " + recipientRef.getUsername() + "."));
 
             // Try to notify recipient if they are online
             Player recipientPlayer = recipientRef.getComponent(Player.getComponentType());
             if (recipientPlayer != null) {
-                recipientPlayer.sendMessage(Message.raw("§6[Wallet] §fYou received §e" + amount + " Copper §ffrom §b" + sender.getDisplayName() + "§f."));
+                recipientPlayer.sendMessage(Message.raw("[Wallet] You received " + amount + " Copper from " + sender.getDisplayName() + "."));
             }
         } else {
-            commandContext.sendMessage(Message.raw("§cYou do not have enough coins."));
+            commandContext.sendMessage(Message.raw("You do not have enough coins."));
         }
 
         return CompletableFuture.completedFuture(null);
