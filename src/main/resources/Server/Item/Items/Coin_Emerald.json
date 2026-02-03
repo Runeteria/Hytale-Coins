@@ -20,5 +20,5 @@
   },
   "Texture": "Items/Coin_Emerald.png",
   "Model": "Items/Coin.blockymodel",
-  "Scale": 2
+  "Scale": 0.5
 }
