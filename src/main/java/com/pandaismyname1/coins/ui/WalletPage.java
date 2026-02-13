@@ -22,6 +22,7 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.Message;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -101,6 +102,9 @@ public class WalletPage extends InteractiveCustomUIPage<WalletPage.WalletEventDa
             // Withdraw 1 coin by default, 100 if shift is held (or max possible)
             long maxWithdrawable = balance / coin.getValue();
             if (maxWithdrawable > 0) {
+                // TEMP fix Feb 13, 26
+            }
+                /*
                 int toWithdraw = data.isShiftHeld() ? (int) Math.min(maxWithdrawable, 100) : 1;
                 long totalValue = (long) toWithdraw * coin.getValue();
 
@@ -127,7 +131,7 @@ public class WalletPage extends InteractiveCustomUIPage<WalletPage.WalletEventDa
 
                     rebuild();
                 }
-            }
+            }*/
         }
     }
 
