@@ -66,6 +66,13 @@ public class PayCommand extends AbstractCommand {
                 commandContext.sendMessage(Message.raw("Economy system is currently unavailable."));
                 return CompletableFuture.completedFuture(null);
             }
+            if (recipientWallet.getBalance() + amount < 0) {
+                // Refund sender if recipient wallet unavailable
+                senderWallet.add(amount);
+                commandContext.sendMessage(Message.raw("The recipient's wallet is too full."));
+                return CompletableFuture.completedFuture(null);
+            }
+
             recipientWallet.add(amount);
 
             sender.sendMessage(Message.raw("[Wallet] You paid " + amount + " Copper to " + recipientRef.getUsername() + "."));

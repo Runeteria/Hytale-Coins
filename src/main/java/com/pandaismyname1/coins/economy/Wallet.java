@@ -18,7 +18,7 @@ public class Wallet {
     }
 
     public void add(long amount) {
-        this.balance += amount;
+        if (!(this.balance + amount < 0)) this.balance += amount;
         save();
     }
 
