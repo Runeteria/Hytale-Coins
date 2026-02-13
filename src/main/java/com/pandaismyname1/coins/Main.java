@@ -58,11 +58,13 @@ public class Main extends JavaPlugin {
         // Register custom interaction
         Interaction.CODEC.register("DepositCoin", DepositCoinInteraction.class, DepositCoinInteraction.CODEC);
 
+        // TEMP fix Feb 13, 26
         // Register mob death listener
-        this.getEntityStoreRegistry().registerSystem(new MobDeathListener());
+        //this.getEntityStoreRegistry().registerSystem(new MobDeathListener());
 
+        // TEMP fix Feb 13, 26
         // Register crop harvest listener
-        this.getEntityStoreRegistry().registerSystem(new CropHarvestListener());
+        //this.getEntityStoreRegistry().registerSystem(new CropHarvestListener());
 
         // Register player join/quit listeners for cross-server wallet sync
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, PlayerListener::onPlayerReady);

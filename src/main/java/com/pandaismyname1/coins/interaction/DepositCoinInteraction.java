@@ -56,12 +56,13 @@ public class DepositCoinInteraction extends SimpleInstantInteraction {
                 }
                 return;
             }
-
-            wallet.add(value);
-            LOGGER.info("[TRANSACTION] DEPOSIT: player=" + uuid + ", coin=" + coin.name() + ", quantity=" + quantity + ", value=" + value + ", newBalance=" + wallet.getBalance());
+            // TEMP fix Feb 13, 26
+            //wallet.add(value);
+            //LOGGER.info("[TRANSACTION] DEPOSIT: player=" + uuid + ", coin=" + coin.name() + ", quantity=" + quantity + ", value=" + value + ", newBalance=" + wallet.getBalance());
 
             // Inform the user
             Player player = (Player) context.getCommandBuffer().getComponent(ref, Player.getComponentType());
+            /*
             if (player != null) {
                 player.sendMessage(Message.raw("Deposited " + value + " coins. New balance: " + wallet.getBalance()));
             }
@@ -71,6 +72,8 @@ public class DepositCoinInteraction extends SimpleInstantInteraction {
             if (container != null) {
                 container.removeItemStackFromSlot(context.getHeldItemSlot(), (int) quantity);
             }
+            */
+            player.sendMessage(Message.raw("Deposits temporarily disabled, sorry!"));
         }
     }
 }
