@@ -103,10 +103,6 @@ public class WalletPage extends InteractiveCustomUIPage<WalletPage.WalletEventDa
             long maxWithdrawable = balance / coin.getValue();
             if (maxWithdrawable > 0) {
                 // TEMP fix Feb 13, 26
-                Player playerComponent = (Player) store.getComponent(ref, Player.getComponentType());
-                if (playerComponent != null) {
-                    playerComponent.sendMessage(Message.raw("Withdrawal temporarily disabled, sorry!"));
-                }
             }
                 /*
                 int toWithdraw = data.isShiftHeld() ? (int) Math.min(maxWithdrawable, 100) : 1;

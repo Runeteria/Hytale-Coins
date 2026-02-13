@@ -55,8 +55,9 @@ public class Main extends JavaPlugin {
         // Register Custom UI
         OpenCustomUIInteraction.registerSimple(this, WalletPage.class, "Coins_Wallet", WalletPage::new);
 
+        // TEMP fix Feb 13, 26
         // Register custom interaction
-        Interaction.CODEC.register("DepositCoin", DepositCoinInteraction.class, DepositCoinInteraction.CODEC);
+        // Interaction.CODEC.register("DepositCoin", DepositCoinInteraction.class, DepositCoinInteraction.CODEC);
 
         // TEMP fix Feb 13, 26
         // Register mob death listener
